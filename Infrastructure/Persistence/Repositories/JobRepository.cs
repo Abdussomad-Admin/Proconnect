@@ -18,7 +18,7 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await context.Jobs
                 .Include(j => j.Company)
-                .Include(j => j.Category)
+                .Include(j => j.Department)
                 .FirstOrDefaultAsync(j => j.Id == id);
         }
 
@@ -27,7 +27,7 @@ namespace Infrastructure.Persistence.Repositories
             return await context.Jobs
                 .Include(j => j.Company)
                 .Include(j => j.RecruiterProfile)
-                .Include(j => j.Category)
+                .Include(j => j.Department)
                 .FirstOrDefaultAsync(j => j.Id == id);
         }
 
@@ -36,7 +36,7 @@ namespace Infrastructure.Persistence.Repositories
             var query = context.Jobs
                 .AsNoTracking()
                 .Include(j => j.Company)
-                .Include(j => j.Category)
+                .Include(j => j.Department)
                 .Where(j => j.Status == JobPostingStatus.Active)
                 .AsQueryable();
 
@@ -151,7 +151,7 @@ namespace Infrastructure.Persistence.Repositories
         {
             var query = context.Jobs
                 .AsNoTracking()
-                .Include(j => j.Category)
+                .Include(j => j.Department)
                 .Include(j => j.JobApplications)
                 .Where(j => j.RecruiterProfileId == recruiterProfileId)
                 .AsQueryable();
@@ -199,7 +199,7 @@ namespace Infrastructure.Persistence.Repositories
             var query = context.Jobs
                 .AsNoTracking()
                 .Include(j => j.Company)
-                .Include(j => j.Category)
+                .Include(j => j.Department)
                 .Where(j => j.Status == JobPostingStatus.Active)
                 .Where(j => !excludeJobIds.Contains(j.Id))
                 .Where(j => j.JobSkills.Any(js => skillIds.Contains(js.SkillId)))

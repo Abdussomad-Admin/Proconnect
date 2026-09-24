@@ -30,7 +30,7 @@ namespace Application.Queries.Job
                     Items = jobs.Items.Select(j => new GetJobsByRecruiterResponse(
                         j.Id,
                         j.JobCategoryId,
-                        j.Category.Name,
+                        j.Department.Name,
                         j.Title,
                         j.EmploymentType,
                         j.WorkPlaceType,

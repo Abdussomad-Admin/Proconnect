@@ -26,13 +26,17 @@
 
         public string CompanySize { get; set; } = default!;
 
-        public string CompanyType { get; set; } = default!; 
+        public string CompanyType { get; set; } = default!;
 
         public string? Headquarters { get; set; }
 
         public string? LogoUrl { get; set; }
 
         public string? LogoPublicId { get; set; }
+
+        public string? CoverImageUrl { get; set; }
+
+        public string? CoverImagePublicId { get; set; }
 
         public string? LinkedInUrl { get; set; }
 

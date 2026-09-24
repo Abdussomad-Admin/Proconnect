@@ -8,6 +8,10 @@ namespace Application.Common.Repositories
     {
         Task AddAsync(Event @event);
 
+        Task AddSpeakerAsync(EventSpeaker speaker);
+
+        Task AddAgendaItemAsync(EventAgendaItem item);
+
         Task<Event?> GetByIdAsync(Guid id);
 
         Task<Event?> GetWithDetailsAsync(Guid id);

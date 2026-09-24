@@ -49,8 +49,6 @@ namespace Application.Commands.Event
                 @event.CoverImagePublicId = uploadResult.PublicId;
                 @event.DateModified = DateTime.UtcNow;
 
-                eventRepository.Update(@event);
-
                 await unitOfWork.SaveAsync();
 
                 return Result<string>.Success(uploadResult.Url, "Cover image uploaded successfully");

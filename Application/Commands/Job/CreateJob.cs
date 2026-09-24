@@ -29,7 +29,7 @@ namespace Application.Commands.Job
 
         public class CreateJobHandler(
             IJobRepository jobRepository,
-            IJobCategoryRepository jobCategoryRepository,
+            IDepartmentRepository jobCategoryRepository,
             IUnitOfWork unitOfWork)
             : IRequestHandler<CreateJobCommand, Result<string>>
         {

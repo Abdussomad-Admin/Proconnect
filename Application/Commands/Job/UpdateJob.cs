@@ -28,7 +28,7 @@ namespace Application.Commands.Job
 
         public class UpdateJobHandler(
             IJobRepository jobRepository,
-            IJobCategoryRepository jobCategoryRepository,
+            IDepartmentRepository departmentRepository,
             IJobApplicationRepository jobApplicationRepository,
             INotificationService notificationService,
             IUnitOfWork unitOfWork)
@@ -49,10 +49,10 @@ namespace Application.Commands.Job
                 if (request.MinSalary > request.MaxSalary)
                     return Result<string>.Failure("Minimum salary cannot exceed maximum salary");
 
-                var category = await jobCategoryRepository.GetByIdAsync(request.JobCategoryId);
+                var department = await departmentRepository.GetByIdAsync(request.JobCategoryId);
 
-                if (category is null)
-                    return Result<string>.Failure("Job category not found");
+                if (department is null)
+                    return Result<string>.Failure("Department not found");
 
                 job.JobCategoryId = request.JobCategoryId;
 

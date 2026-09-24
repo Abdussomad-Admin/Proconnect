@@ -61,10 +61,9 @@ namespace Application.Commands.Event
                     DisplayOrder = @event.Speakers.Count
                 };
 
-                @event.Speakers.Add(speaker);
-                @event.DateModified = DateTime.UtcNow;
+                await eventRepository.AddSpeakerAsync(speaker);
 
-                eventRepository.Update(@event);
+                @event.DateModified = DateTime.UtcNow;
 
                 await unitOfWork.SaveAsync();
 

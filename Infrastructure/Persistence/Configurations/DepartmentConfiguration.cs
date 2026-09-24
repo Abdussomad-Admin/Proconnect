@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-public class JobCategoryConfiguration : IEntityTypeConfiguration<JobCategory>
+public class DepartmentConfiguration : IEntityTypeConfiguration<Department>
 {
-    public void Configure(EntityTypeBuilder<JobCategory> builder)
+    public void Configure(EntityTypeBuilder<Department> builder)
     {
-        builder.ToTable("JobCategory");
+        builder.ToTable("Deparment");
 
         builder.HasKey(x => x.Id);
 

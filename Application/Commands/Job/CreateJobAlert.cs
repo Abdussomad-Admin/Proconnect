@@ -32,7 +32,7 @@ namespace Application.Commands.Job
                     ProfessionalProfileId = request.ProfessionalProfileId,
                     Keyword = request.Keyword,
                     Location = request.Location,
-                    JobCategoryId = request.JobCategoryId,
+                    DepartmentId = request.JobCategoryId,
                     EmploymentType = request.EmploymentType,
                     WorkPlaceType = request.WorkPlaceType,
                     ExperienceLevel = request.ExperienceLevel,

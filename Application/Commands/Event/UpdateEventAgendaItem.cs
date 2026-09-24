@@ -54,7 +54,6 @@ namespace Application.Commands.Event
 
                 @event.DateModified = DateTime.UtcNow;
 
-                eventRepository.Update(@event);
 
                 await unitOfWork.SaveAsync();
 

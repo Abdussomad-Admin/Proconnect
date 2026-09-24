@@ -26,6 +26,8 @@ namespace Infrastructure.Persistence.Context
 
         public DbSet<ConversationParticipant> ConversationParticipants { get; set; }
 
+        public DbSet<Department> Departments { get; set; }
+
         public DbSet<Education> Educations { get; set; }
 
         public DbSet<Experience> Experiences { get; set; }
@@ -43,8 +45,6 @@ namespace Infrastructure.Persistence.Context
         public DbSet<Job> Jobs { get; set; }
 
         public DbSet<JobApplication> JobApplications { get; set; }
-
-        public DbSet<JobCategory> JobCategories { get; set; }
 
         public DbSet<JobSkill> JobSkills { get; set; }
 
@@ -73,6 +73,8 @@ namespace Infrastructure.Persistence.Context
         public DbSet<SavedJob> SavedJobs { get; set; }
 
         public DbSet<SavedEvent> SavedEvents { get; set; }
+
+        public DbSet<SavedCandidate> SavedCandidates { get; set; }
 
         public DbSet<Skill> Skills { get; set; }
 

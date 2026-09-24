@@ -16,7 +16,7 @@ namespace Domain.Entities
 
         public Guid JobCategoryId { get; set; }
 
-        public JobCategory Category { get; set; } = default!;
+        public Department Department { get; set; } = default!;
 
         public string Title { get; set; } = default!;
 

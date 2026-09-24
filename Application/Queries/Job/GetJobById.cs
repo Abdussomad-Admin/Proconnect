@@ -36,7 +36,7 @@ namespace Application.Queries.Job
                     job.Company.LogoUrl,
                     job.RecruiterProfileId,
                     job.JobCategoryId,
-                    job.Category.Name,
+                    job.Department.Name,
                     job.Title,
                     job.Description,
                     job.Requirement,

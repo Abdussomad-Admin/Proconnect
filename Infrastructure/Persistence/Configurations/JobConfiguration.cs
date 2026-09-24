@@ -59,7 +59,7 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
             .HasForeignKey(x => x.RecruiterProfileId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(x => x.Category)
+        builder.HasOne(x => x.Department)
             .WithMany(x => x.Jobs)
             .HasForeignKey(x => x.JobCategoryId)
             .OnDelete(DeleteBehavior.Restrict);

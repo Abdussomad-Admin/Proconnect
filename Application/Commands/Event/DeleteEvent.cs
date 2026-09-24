@@ -38,7 +38,6 @@ namespace Application.Commands.Event
                 @event.IsDeleted = true;
                 @event.DateModified = DateTime.UtcNow;
 
-                eventRepository.Update(@event);
 
                 await unitOfWork.SaveAsync();
 

@@ -21,9 +21,9 @@ public class SavedJobSearchConfiguration : IEntityTypeConfiguration<SavedJobSear
             .HasForeignKey(x => x.ProfessionalProfileId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(x => x.JobCategory)
+        builder.HasOne(x => x.Department)
             .WithMany()
-            .HasForeignKey(x => x.JobCategoryId)
+            .HasForeignKey(x => x.DepartmentId)
             .OnDelete(DeleteBehavior.SetNull);
     }
 }

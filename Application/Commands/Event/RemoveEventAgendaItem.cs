@@ -39,7 +39,6 @@ namespace Application.Commands.Event
                 @event.AgendaItems.Remove(item);
                 @event.DateModified = DateTime.UtcNow;
 
-                eventRepository.Update(@event);
 
                 await unitOfWork.SaveAsync();
 

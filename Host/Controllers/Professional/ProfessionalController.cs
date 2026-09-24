@@ -1,9 +1,11 @@
 ﻿using Application.Commands;
 using Application.Common.Pagenation;
+using Application.Queries.Search;
 using Host.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using static Application.Commands.Authentication.UpdateUserBasicInfo;
 using static Application.Commands.Authentication.UploadProfilePicture;
 using static Application.Commands.Authentication.UploadProfilePicture.UploadProfilePictureHandler;
@@ -29,6 +31,7 @@ using static Application.Commands.Professional.UpdatePortfolioLink;
 using static Application.Commands.Professional.UpdateProfessionalProfile;
 using static Application.Commands.Professional.UpdateProject;
 using static Application.Commands.Professional.UploadResume;
+using static Application.Commands.Professional.CreateSkill;
 using static Application.Commands.UploadCompanyLogo.UploadCompanyLogoHandler;
 using static Application.Queries.Professional.GetCertificateById;
 using static Application.Queries.Professional.GetCertificatesByProfile;
@@ -611,6 +614,27 @@ namespace Host.Controllers.Professional
         public async Task<IActionResult> GetSkills()
         {
             var response = await mediator.Send(new GetSkillsQuery());
+
+            if (!response.Status)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] string query)
+        {
+            var result = await mediator.Send(new SearchSkills.SearchSkillsQuery(query));
+            return result.Status ? Ok(result) : BadRequest(result);
+        }
+
+
+        [HttpPost("skills")]
+        public async Task<IActionResult> CreateSkill(CreateSkillCommand command)
+        {
+            var response = await mediator.Send(command);
 
             if (!response.Status)
             {

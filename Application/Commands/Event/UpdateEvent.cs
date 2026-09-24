@@ -67,8 +67,6 @@ namespace Application.Commands.Event
                 @event.AttendeeLimit = request.AttendeeLimit;
                 @event.DateModified = DateTime.UtcNow;
 
-                eventRepository.Update(@event);
-
                 await unitOfWork.SaveAsync();
 
                 return Result<string>.Success("updated", "Event updated successfully");

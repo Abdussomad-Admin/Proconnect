@@ -56,7 +56,7 @@ namespace Application.Queries.Job
                         j.Company.Name,
                         j.Company.LogoUrl,
                         j.JobCategoryId,
-                        j.Category.Name,
+                        j.Department.Name,
                         j.Title,
                         j.EmploymentType,
                         j.WorkPlaceType,

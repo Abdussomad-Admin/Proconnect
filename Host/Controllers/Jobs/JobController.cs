@@ -10,7 +10,6 @@ using static Application.Commands.Job.ApplyJob;
 using static Application.Commands.Job.CloseJob;
 using static Application.Commands.Job.CreateJob;
 using static Application.Commands.Job.CreateJobAlert;
-using static Application.Commands.Job.CreateJobCategory;
 using static Application.Commands.Job.DeleteJob;
 using static Application.Commands.Job.DeleteJobAlert;
 using static Application.Commands.Job.PublishJob;
@@ -29,7 +28,6 @@ using static Application.Queries.Job.GetApplicationStatusCounts;
 using static Application.Queries.Job.GetApplicationStatusCountsByProfessional;
 using static Application.Queries.Job.GetJobAlerts;
 using static Application.Queries.Job.GetJobById;
-using static Application.Queries.Job.GetJobCategories;
 using static Application.Queries.Job.GetJobsByRecruiter;
 using static Application.Queries.Job.GetJobSkills;
 using static Application.Queries.Job.GetRecommendedJobs;
@@ -168,19 +166,7 @@ namespace Host.Controllers.Job
             return Ok(response);
         }
 
-        [HttpPost("create-job-category")]
-
-        public async Task<IActionResult> CreateJobCategory(CreateJobCategoryCommand category)
-        {
-            var response = await mediator.Send(category);
-
-            if (!response.Status)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
-        }
+        
 
         [HttpGet("job/{id}")]
         public async Task<IActionResult> GetJob(Guid id, [FromQuery] string? @ref)
@@ -329,20 +315,7 @@ namespace Host.Controllers.Job
 
         [HttpGet("job-categories")]
 
-        public async Task<IActionResult> GetJobCategories(
-    [FromQuery] EmploymentType? employmentType,
-    [FromQuery] ExperienceLevel? experienceLevel)
-        {
-            var response = await mediator.Send(new GetJobCategoriesQuery(employmentType, experienceLevel));
-
-            if (!response.Status)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
-        }
-
+    
         [HttpGet("applications/recruiter")]
 
         public async Task<IActionResult> GetApplicationsByRecruiter(

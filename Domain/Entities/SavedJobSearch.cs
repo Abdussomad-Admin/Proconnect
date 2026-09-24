@@ -11,8 +11,8 @@ namespace Domain.Entities
 
         public string? Keyword { get; set; }
         public string? Location { get; set; }
-        public Guid? JobCategoryId { get; set; }
-        public JobCategory? JobCategory { get; set; }
+        public Guid? DepartmentId { get; set; }
+        public Department? Department { get; set; }
         public EmploymentType? EmploymentType { get; set; }
         public WorkPlaceType? WorkPlaceType { get; set; }
         public ExperienceLevel? ExperienceLevel { get; set; }

@@ -34,7 +34,7 @@ namespace Infrastructure.Services
                         {
                             Keyword = alert.Keyword,
                             Location = alert.Location,
-                            JobCategoryId = alert.JobCategoryId,
+                            JobCategoryId = alert.DepartmentId,
                             EmploymentType = alert.EmploymentType,
                             WorkPlaceType = alert.WorkPlaceType,
                             ExperienceLevel = alert.ExperienceLevel,

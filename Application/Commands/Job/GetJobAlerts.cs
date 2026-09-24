@@ -18,7 +18,7 @@ namespace Application.Queries.Job
                 var searches = await savedJobSearchRepository.GetByProfessionalProfileIdAsync(request.ProfessionalProfileId);
 
                 var response = searches.Select(s => new GetJobAlertsResponse(
-                    s.Id, s.Keyword, s.Location, s.JobCategoryId, s.JobCategory?.Name,
+                    s.Id, s.Keyword, s.Location, s.DepartmentId, s.Department?.Name,
                     s.EmploymentType, s.WorkPlaceType, s.ExperienceLevel, s.MinSalary,
                     s.EmailNotificationsEnabled, s.DateCreated)).ToList();
 

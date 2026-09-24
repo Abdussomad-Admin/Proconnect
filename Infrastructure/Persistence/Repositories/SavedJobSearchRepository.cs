@@ -24,7 +24,7 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await context.SavedJobSearches
                 .AsNoTracking()
-                .Include(s => s.JobCategory)
+                .Include(s => s.Department)
                 .Where(s => s.ProfessionalProfileId == professionalProfileId && !s.IsDeleted)
                 .OrderByDescending(s => s.DateCreated)
                 .ToListAsync();

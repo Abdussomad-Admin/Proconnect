@@ -255,5 +255,15 @@ namespace Infrastructure.Persistence.Repositories
                 PageSize = request.PageSize
             };
         }
+
+        public async Task AddSpeakerAsync(EventSpeaker speaker)
+        {
+            await context.EventSpeakers.AddAsync(speaker);
+        }
+
+        public async Task AddAgendaItemAsync(EventAgendaItem item)
+        {
+            await context.EventAgendaItems.AddAsync(item);
+        }
     }
 }

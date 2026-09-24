@@ -16,7 +16,7 @@ namespace Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.10")
+                .HasAnnotation("ProductVersion", "10.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Domain.Entities.AnalyticsEvent", b =>
@@ -188,6 +188,12 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("CompanyType")
                         .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CoverImagePublicId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CoverImageUrl")
                         .HasColumnType("longtext");
 
                     b.Property<string>("CreatedBy")
@@ -390,7 +396,7 @@ namespace Infrastructure.Migrations
                         {
                             Id = new Guid("b235f2ed-bb4e-4bd2-a03d-0e3c17aaf2e2"),
                             CreatedBy = "c117635d-96e0-409b-9fae-72976ec9c42a",
-                            DateCreated = new DateTime(2026, 9, 13, 11, 58, 54, 575, DateTimeKind.Utc).AddTicks(2954),
+                            DateCreated = new DateTime(2026, 9, 24, 4, 29, 58, 864, DateTimeKind.Utc).AddTicks(5503),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsGroup = false,
@@ -445,16 +451,56 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("695078e2-cf76-47ee-b37f-095659a41dbe"),
+                            Id = new Guid("e199a51e-def7-49d4-9663-08c2e0616969"),
                             ConversationId = new Guid("b235f2ed-bb4e-4bd2-a03d-0e3c17aaf2e2"),
                             CreatedBy = "c117635d-96e0-409b-9fae-72976ec9c42a",
                             IsDeleted = false,
                             IsHidden = false,
                             IsMuted = false,
                             IsPinned = false,
-                            JoinedAt = new DateTime(2026, 9, 13, 11, 58, 54, 576, DateTimeKind.Utc).AddTicks(3017),
+                            JoinedAt = new DateTime(2026, 9, 24, 4, 29, 58, 865, DateTimeKind.Utc).AddTicks(4942),
                             UserId = "c117635d-96e0-409b-9fae-72976ec9c42a"
                         });
+                });
+
+            modelBuilder.Entity("Domain.Entities.Department", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Deparment", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Education", b =>
@@ -1036,39 +1082,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("JobApplication", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.JobCategory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("JobCategory", (string)null);
-                });
-
             modelBuilder.Entity("Domain.Entities.JobSkill", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1630,6 +1643,37 @@ namespace Infrastructure.Migrations
                     b.ToTable("Report", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.SavedCandidate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid>("ProfessionalProfileId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("RecruiterProfileId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProfessionalProfileId");
+
+                    b.HasIndex("RecruiterProfileId");
+
+                    b.ToTable("SavedCandidates");
+                });
+
             modelBuilder.Entity("Domain.Entities.SavedEvent", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1703,6 +1747,12 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<Guid?>("DepartmentId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("DepartmentId1")
+                        .HasColumnType("char(36)");
+
                     b.Property<bool>("EmailNotificationsEnabled")
                         .HasColumnType("tinyint(1)");
 
@@ -1716,9 +1766,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<Guid?>("JobCategoryId")
-                        .HasColumnType("char(36)");
 
                     b.Property<string>("Keyword")
                         .HasColumnType("longtext");
@@ -1741,7 +1788,9 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("JobCategoryId");
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("DepartmentId1");
 
                     b.HasIndex("ProfessionalProfileId");
 
@@ -1888,11 +1937,11 @@ namespace Infrastructure.Migrations
                             Id = "c117635d-96e0-409b-9fae-72976ec9c42a",
                             Bio = "I am the administrator of this platform.",
                             CreatedBy = "system",
-                            DateCreated = new DateTime(2026, 9, 13, 11, 58, 54, 489, DateTimeKind.Utc).AddTicks(7113),
+                            DateCreated = new DateTime(2026, 9, 24, 4, 29, 58, 783, DateTimeKind.Utc).AddTicks(6202),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             FirstName = "Ajibike",
-                            HashedPassword = "AQAAAAIAAYagAAAAEJVlEBdRzNH/xbobmSxIaqNLUFysHlcoxrjmERaOxrwgFMmZvBqZFsY7UlazkLn1Gw==",
+                            HashedPassword = "AQAAAAIAAYagAAAAEFQwdoK83o9eLb8A3e5UgZTrxXzV4uRqy0uXH98fyubyEhyZPyUMS7WMGRO8imKYbg==",
                             IsActive = true,
                             IsDeleted = false,
                             IsVerified = true,
@@ -2069,6 +2118,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Department", b =>
+                {
+                    b.HasOne("Domain.Entities.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("Domain.Entities.Education", b =>
                 {
                     b.HasOne("Domain.Entities.ProfessionalProfile", "ProfessionalProfile")
@@ -2190,7 +2250,7 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.JobCategory", "Category")
+                    b.HasOne("Domain.Entities.Department", "Department")
                         .WithMany("Jobs")
                         .HasForeignKey("JobCategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -2202,9 +2262,9 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
-
                     b.Navigation("Company");
+
+                    b.Navigation("Department");
 
                     b.Navigation("RecruiterProfile");
                 });
@@ -2277,7 +2337,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.User", "ActorUser")
                         .WithMany()
                         .HasForeignKey("ActorUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany("Notifications")
@@ -2423,6 +2483,25 @@ namespace Infrastructure.Migrations
                     b.Navigation("Reporter");
                 });
 
+            modelBuilder.Entity("Domain.Entities.SavedCandidate", b =>
+                {
+                    b.HasOne("Domain.Entities.ProfessionalProfile", "ProfessionalProfile")
+                        .WithMany()
+                        .HasForeignKey("ProfessionalProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.RecruiterProfile", "RecruiterProfile")
+                        .WithMany()
+                        .HasForeignKey("RecruiterProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProfessionalProfile");
+
+                    b.Navigation("RecruiterProfile");
+                });
+
             modelBuilder.Entity("Domain.Entities.SavedEvent", b =>
                 {
                     b.HasOne("Domain.Entities.Event", "Event")
@@ -2463,10 +2542,14 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.SavedJobSearch", b =>
                 {
-                    b.HasOne("Domain.Entities.JobCategory", "JobCategory")
+                    b.HasOne("Domain.Entities.Department", "Department")
                         .WithMany()
-                        .HasForeignKey("JobCategoryId")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Domain.Entities.Department", null)
+                        .WithMany("SavedJobSearches")
+                        .HasForeignKey("DepartmentId1");
 
                     b.HasOne("Domain.Entities.ProfessionalProfile", "ProfessionalProfile")
                         .WithMany("SavedJobSearches")
@@ -2474,7 +2557,7 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("JobCategory");
+                    b.Navigation("Department");
 
                     b.Navigation("ProfessionalProfile");
                 });
@@ -2533,6 +2616,13 @@ namespace Infrastructure.Migrations
                     b.Navigation("Participants");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Department", b =>
+                {
+                    b.Navigation("Jobs");
+
+                    b.Navigation("SavedJobSearches");
+                });
+
             modelBuilder.Entity("Domain.Entities.Event", b =>
                 {
                     b.Navigation("AgendaItems");
@@ -2551,11 +2641,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("JobSkills");
 
                     b.Navigation("SavedJobs");
-                });
-
-            modelBuilder.Entity("Domain.Entities.JobCategory", b =>
-                {
-                    b.Navigation("Jobs");
                 });
 
             modelBuilder.Entity("Domain.Entities.Post", b =>

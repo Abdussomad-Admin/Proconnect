@@ -25,5 +25,20 @@ namespace Infrastructure.Persistence.Repositories
         {
             await context.Skills.AddAsync(skill);
         }
+
+        public async Task<List<Skill>> SearchByNameAsync(string query, int limit)
+        {
+            return await context.Skills
+                .Where(s => !s.IsDeleted && s.Name.Contains(query))
+                .OrderBy(s => s.Name)
+                .Take(limit)
+                .ToListAsync();
+        }
+
+        public async Task<Skill?> GetByNameAsync(string name)
+        {
+            return await context.Skills
+                .FirstOrDefaultAsync(s => !s.IsDeleted && s.Name.ToLower() == name.ToLower());
+        }
     }
 }

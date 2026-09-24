@@ -51,10 +51,9 @@ namespace Application.Commands.Event
                     DisplayOrder = @event.AgendaItems.Count
                 };
 
-                @event.AgendaItems.Add(item);
-                @event.DateModified = DateTime.UtcNow;
+                await eventRepository.AddAgendaItemAsync(item);
 
-                eventRepository.Update(@event);
+                @event.DateModified = DateTime.UtcNow;
 
                 await unitOfWork.SaveAsync();
 

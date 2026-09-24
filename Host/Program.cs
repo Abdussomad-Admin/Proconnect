@@ -140,7 +140,6 @@ builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>(
 
 builder.Services.AddScoped<ISavedJobRepository, SavedJobRepository>();
 
-builder.Services.AddScoped<IJobCategoryRepository, JobCategoryRepository>();
 
 builder.Services.AddScoped<IConversationParticipantRepository, ConversationParticipantRepository>();
 
@@ -150,11 +149,15 @@ builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+
 
 
 builder.Services.AddScoped<ICompanyReviewRepository, CompanyReviewRepository>();
 
 builder.Services.AddScoped<ISavedJobSearchRepository, SavedJobSearchRepository>();
+
+builder.Services.AddScoped<ISavedCandidateRepository, SavedCandidateRepository>();
 
 builder.Services.AddHostedService<JobAlertMatchingService>();
 
@@ -171,6 +174,9 @@ builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 // Certificate
 builder.Services.AddScoped<ICertificateRepository, CertificateRepository>();
 
+builder.Services.AddScoped<ILocationMatcher, LocationMatcher>();
+builder.Services.AddScoped<IMatchScoreCalculator, MatchScoreCalculator>();
+
 //// Job
 //builder.Services.AddScoped<IJobRepository, JobRepository>();
 
@@ -186,7 +192,7 @@ builder.Services.AddScoped<ICertificateRepository, CertificateRepository>();
 //// User Connection
 //builder.Services.AddScoped<IUserConnectionRepository, UserConnectionRepository>();
 
- //Audit Log
+//Audit Log
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
@@ -199,6 +205,7 @@ builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 
 builder.Services.AddScoped<IEventRegistrationRepository, EventRegistrationRepository>();
+
 builder.Services.AddScoped<ISavedEventRepository, SavedEventRepository>();
 
 

@@ -1,6 +1,7 @@
 ﻿using Application.Common.Dtos;
 using Application.Common.Repositories;
 using Application.Services.Interfaces;
+using Domain.Entities;
 using Domain.Enums;
 using MediatR;
 
@@ -44,6 +45,8 @@ namespace Application.Commands.Networking
                 var accepter = await userRepository.GetByIdAsync(request.UserId);
                 var accepterName = accepter is not null ? $"{accepter.FirstName} {accepter.LastName}".Trim() : "Someone";
 
+                string currentUserId = accepter.RecruiterProfile is null ? accepter.ProfessionalProfile.Id.ToString() : accepter.RecruiterProfile.Id.ToString();
+
                 await notificationService.SendNotificationAsync(
                     recipientUserId: connection.SenderId,
                     actorUserId: request.UserId,
@@ -54,7 +57,7 @@ namespace Application.Commands.Networking
                     type: NotificationType.ConnectionAccepted,
                     sourceEntityType: NotificationSourceEntityType.ConnectionRequest,
                     sourceEntityId: connection.Id,
-                    actionUrl: $"/profile.html?userId={request.UserId}",
+                    actionUrl: $"/profile.html?userId={Guid.Parse(currentUserId)}",
                     createdBy: request.UserId.ToString());
 
                 return Result<ConnectionResponse>.Success(

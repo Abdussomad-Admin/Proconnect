@@ -39,8 +39,6 @@ namespace Application.Commands.Event
                 @event.Speakers.Remove(speaker);
                 @event.DateModified = DateTime.UtcNow;
 
-                eventRepository.Update(@event);
-
                 await unitOfWork.SaveAsync();
 
                 return Result<string>.Success("removed", "Speaker removed successfully");

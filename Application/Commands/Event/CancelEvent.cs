@@ -48,7 +48,6 @@ namespace Application.Commands.Event
                 @event.CancellationReason = request.CancellationReason;
                 @event.DateModified = DateTime.UtcNow;
 
-                eventRepository.Update(@event);
 
                 await unitOfWork.SaveAsync();
 

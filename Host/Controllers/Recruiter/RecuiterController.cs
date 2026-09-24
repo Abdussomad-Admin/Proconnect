@@ -10,13 +10,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using static Application.Commands.ApproveRecruiter;
-using static Application.Queries.Recruiter.MarkReviewHelpful;
 using static Application.Commands.RemoveRecruiter;
 using static Application.Commands.Review.CreateCompanyReview;
+using static Application.Commands.SavedCandidates.RemoveSavedCandidate;
+using static Application.Commands.SavedCandidates.SaveCandidate;
 using static Application.Queries.Company.GetCompanyRatingSummary;
 using static Application.Queries.Company.GetCompanyReviews;
 using static Application.Queries.Company.GetPeopleYouMightKnowAtCompany;
 using static Application.Queries.Recruiter.GetCompanyPublicProfile;
+using static Application.Queries.Recruiter.MarkReviewHelpful;
+using static Application.Queries.SavedCandidates.GetSavedCandidates;
 
 namespace Host.Controllers.Recruiter
 {
@@ -73,12 +76,29 @@ namespace Host.Controllers.Recruiter
             return result.Status ? Ok(result) : BadRequest(result);
         }
 
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateRecruiterProfile(
+            [FromBody] UpdateRecruiterProfile.UpdateRecruiterProfileCommand command)
+        {
+            var result = await sender.Send(command with { RequestingUserId = ClaimsHelper.GetUserId(User) });
+            return result.Status ? Ok(result) : BadRequest(result);
+        }
+
         [HttpPut("logo")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UploadCompanyLogo(IFormFile file)
         {
             var result = await sender.Send(
                 new UploadCompanyLogo.UploadCompanyLogoCommand(ClaimsHelper.GetUserId(User), file));
+            return result.Status ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpPut("cover-image")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadCompanyCoverImage(IFormFile file)
+        {
+            var result = await sender.Send(
+                new UploadCompanyCoverImage.UploadCompanyCoverImageCommand(ClaimsHelper.GetUserId(User), file));
             return result.Status ? Ok(result) : BadRequest(result);
         }
 
@@ -95,6 +115,18 @@ namespace Host.Controllers.Recruiter
         public async Task<IActionResult> GetCompanyProfile(Guid companyId)
         {
             var result = await sender.Send(new GetCompanyProfile.GetCompanyProfileQuery(companyId));
+            return result.Status ? Ok(result) : NotFound(result);
+        }
+
+        [HttpGet("{id:guid}/public-profile")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetRecruiterPublicProfile(Guid id)
+        {
+            Guid? viewerUserId = User.Identity?.IsAuthenticated == true
+                ? ClaimsHelper.GetUserId(User)
+                : null;
+
+            var result = await sender.Send(new GetRecruiterPublicProfile.GetRecruiterPublicProfileQuery(id, viewerUserId));
             return result.Status ? Ok(result) : NotFound(result);
         }
 
@@ -184,6 +216,67 @@ namespace Host.Controllers.Recruiter
             var response = await sender.Send(new GetPeopleYouMightKnowAtCompanyQuery(companyId, currentUserId, take));
             if (!response.Status) return BadRequest(response);
             return Ok(response);
+        }
+
+        [HttpPost("departments")]
+        public async Task<IActionResult> CreateDepartment(
+[FromBody] CreateDepartment.CreateDepartmentCommand command)
+        {
+            var result = await sender.Send(command with { RequestingUserId = ClaimsHelper.GetUserId(User) });
+            return result.Status ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpPut("departments/{departmentId:guid}")]
+        public async Task<IActionResult> UpdateDepartment(
+            Guid departmentId,
+            [FromBody] UpdateDepartment.UpdateDepartmentCommand command)
+        {
+            var result = await sender.Send(command with { RequestingUserId = ClaimsHelper.GetUserId(User), DepartmentId = departmentId });
+            return result.Status ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpDelete("departments/{departmentId:guid}")]
+        public async Task<IActionResult> DeleteDepartment(Guid departmentId)
+        {
+            var result = await sender.Send(
+                new DeleteDepartment.DeleteDepartmentCommand(ClaimsHelper.GetUserId(User), departmentId));
+            return result.Status ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpGet("departments")]
+        public async Task<IActionResult> GetDepartments()
+        {
+            var result = await sender.Send(new GetDepartments.GetDepartmentsQuery(ClaimsHelper.GetUserId(User)));
+            return result.Status ? Ok(result) : BadRequest(result);
+        }
+
+        public record SaveCandidateRequest(Guid ProfessionalProfileId);
+
+        [HttpPost("save")]
+        public async Task<IActionResult> Save([FromBody] SaveCandidateRequest request)
+        {
+            var command = new SaveCandidateCommand(ClaimsHelper.GetUserId(User), request.ProfessionalProfileId);
+            var response = await sender.Send(command);
+            return response.Status ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpPost("remove")]
+        public async Task<IActionResult> Remove([FromBody] SaveCandidateRequest request)
+        {
+            var command = new RemoveSavedCandidateCommand(ClaimsHelper.GetUserId(User), request.ProfessionalProfileId);
+            var response = await sender.Send(command);
+            return response.Status ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSaved(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] bool usePaging = true)
+        {
+            var query = new GetSavedCandidatesQuery(ClaimsHelper.GetUserId(User), pageNumber, pageSize, usePaging);
+            var response = await sender.Send(query);
+            return response.Status ? Ok(response) : BadRequest(response);
         }
     }
 }
