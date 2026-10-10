@@ -326,12 +326,13 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins(
                 "http://localhost:5500",
-                "https://github.io")
+                "https://abdussomad-admin.github.io")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
     });
 });
+
 
 
 
