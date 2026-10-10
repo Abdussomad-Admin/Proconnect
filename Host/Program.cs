@@ -346,6 +346,26 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Automatically apply migrations and create tables in the cloud database on startup
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        // Replace 'ApplicationDbContext' with the exact name of your DB context if it's named differently
+        var context = services.GetRequiredService<ProConnectDbContext>();
+
+        // This will physically create the tables in your Aiven cloud database
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while creating tables during production startup.");
+    }
+}
+
+
 
 app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
