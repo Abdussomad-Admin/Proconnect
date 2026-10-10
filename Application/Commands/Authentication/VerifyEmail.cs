@@ -3,6 +3,7 @@ using Application.Common.Repositories;
 using Application.Contract.Settings;
 using Application.Services.Interfaces;
 using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Options;
 
@@ -51,6 +52,8 @@ namespace Application.Commands.Authentication
                         "Verification code has expired. Please request a new one");
 
                 user.IsVerified = true;
+
+                user.Status = UserStatus.Active;
 
                 user.VerificationToken = null;
 

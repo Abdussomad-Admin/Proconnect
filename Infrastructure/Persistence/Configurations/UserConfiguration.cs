@@ -44,8 +44,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.IsVerified)
             .HasDefaultValue(false);
 
-        builder.Property(x => x.IsActive)
-            .HasDefaultValue(true);
 
         builder.Property(x => x.DateCreated)
             .IsRequired();

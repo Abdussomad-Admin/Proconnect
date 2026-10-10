@@ -1,4 +1,5 @@
-﻿using Application.Common.Pagenation;
+﻿using Application.Common.Dtos;
+using Application.Common.Pagenation;
 using Domain.Entities;
 using Domain.Enums;
 
@@ -15,6 +16,8 @@ namespace Application.Common.Repositories
         Task<Event?> GetByIdAsync(Guid id);
 
         Task<Event?> GetWithDetailsAsync(Guid id);
+
+        Task<PageResponse<Event>> GetAdminListAsync(AdminEventFilter filter, PageRequest pageRequest, bool usePaging);
 
         Task<PageResponse<Event>> SearchAsync(
             PageRequest request,

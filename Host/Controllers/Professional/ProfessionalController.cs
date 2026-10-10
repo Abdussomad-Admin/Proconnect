@@ -5,7 +5,6 @@ using Host.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using static Application.Commands.Authentication.UpdateUserBasicInfo;
 using static Application.Commands.Authentication.UploadProfilePicture;
 using static Application.Commands.Authentication.UploadProfilePicture.UploadProfilePictureHandler;
@@ -634,7 +633,7 @@ namespace Host.Controllers.Professional
         [HttpPost("skills")]
         public async Task<IActionResult> CreateSkill(CreateSkillCommand command)
         {
-            var response = await mediator.Send(command);
+            var response = await mediator.Send(command with {CreatedBy = ClaimsHelper.GetUserId(User).ToString() });
 
             if (!response.Status)
             {

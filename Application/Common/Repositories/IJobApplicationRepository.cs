@@ -40,6 +40,12 @@ namespace Application.Common.Repositories
         Task<List<RecruiterPerformanceDto>> GetRecruiterPerformanceByCompanyAsync(Guid companyId, DateTime start, DateTime end);
         Task<InterviewStatsDto> GetInterviewStatsByCompanyAsync(Guid companyId, DateTime start, DateTime end);
 
+        Task<(int Total, int Upcoming, int Past, int RejectedAfterScheduling, int DueTodayOrTomorrow)>
+    GetInterviewCountsByRecruiterAsync(Guid recruiterProfileId);
+
+        Task<(int CurrentPeriodCount, int PreviousPeriodCount)> GetInterviewSchedulingTrendByRecruiterAsync(
+            Guid recruiterProfileId, DateTime periodStart, DateTime previousPeriodStart, DateTime previousPeriodEnd);
+
         void Update(JobApplication application);
 
         void Delete(JobApplication application);

@@ -136,7 +136,7 @@ namespace API.Controllers
             var professionalProfile = await professionalProfileRepository.GetByUserIdAsync(userId);
 
             if (professionalProfile is null)
-                return BadRequest(Application.Common.Dtos.Result<object>.Failure("No professional profile found for this account"));
+                return BadRequest(Result<object>.Failure("No professional profile found for this account"));
 
             var query = new GetProfileDemographicsAnalytics.GetProfileDemographicsAnalyticsQuery(
                 professionalProfile.Id, preset, customStart, customEnd);

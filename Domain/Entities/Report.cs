@@ -14,9 +14,11 @@ namespace Domain.Entities
 
         public User ReportedUser { get; set; } = default!;
         
-        public Guid PostId { get; set; }
+        public Guid? PostId { get; set; }
 
-        public Post Post { get; set; } = default!;
+        public Post? Post { get; set; } = default!;
+
+        public string ContentType { get; set; } = default!;
 
         public bool IsDeleted { get; set; }
 

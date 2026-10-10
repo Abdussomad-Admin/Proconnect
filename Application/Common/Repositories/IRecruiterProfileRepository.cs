@@ -15,6 +15,8 @@ namespace Application.Common.Repositories
 
         Task<List<RecruiterProfile>> GetCompanyAdminsAsync(Guid companyId);
 
+        Task<Dictionary<Guid, int>> CountByCompanyIdsAsync(List<Guid> companyIds);
+
         void UpdateAsync(RecruiterProfile recruiterProfile);
 
         void Delete(RecruiterProfile recruiterProfile);

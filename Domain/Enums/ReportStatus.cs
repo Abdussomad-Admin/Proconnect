@@ -6,6 +6,7 @@
         UnderReview,
         Resolved,
         Rejected,
-        Closed
+        Closed,
+        Escalated
     }
 }

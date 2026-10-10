@@ -3,6 +3,7 @@ using Application.Common.Repositories;
 using Application.Contract.Settings;
 using Application.Services.Interfaces;
 using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -35,7 +36,7 @@ namespace Application.Commands.Authentication
                     return Result<LoginResponse>.Failure("Please verify your email");
                 }
 
-                if (!getUser.IsActive)
+                if (getUser.Status == UserStatus.Deactivated)
                 {
                     return Result<LoginResponse>.Failure("Account has been deactivated.");
                 }

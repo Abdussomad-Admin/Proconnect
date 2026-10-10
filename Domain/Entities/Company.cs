@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities
+﻿using Domain.Enums;
+
+namespace Domain.Entities
 {
     public class Company
     {
@@ -59,6 +61,8 @@
         public string CreatedBy { get; set; } = default!;
 
         public DateTime DateCreated { get; set; } = DateTime.UtcNow;
+
+        public CompanyStatus Status { get; set; } = CompanyStatus.Pending;
 
         public ICollection<Job> Jobs { get; set; } = new HashSet<Job>();
 

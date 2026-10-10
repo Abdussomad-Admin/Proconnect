@@ -16,6 +16,7 @@ namespace Application.Commands.Professional
 
         public class AddProfessionalSkillHandler(
             IProfessionalSkillRepository professionalSkillRepository,
+            IProfessionalProfileRepository professionalProfileRepository,
             IUnitOfWork unitOfWork)
             : IRequestHandler<
                 AddProfessionalSkillCommand,
@@ -36,6 +37,14 @@ namespace Application.Commands.Professional
                         "Skill already added");
                 }
 
+                var profile = await professionalProfileRepository.GetByIdAsync(request.ProfessionalProfileId);
+
+                if (profile == null)
+                {
+                    return Result<string>.Failure(
+                        "Professional profile not found");
+                }
+
 
                 var professionalSkill = new ProfessionalSkill
                 {
@@ -44,6 +53,8 @@ namespace Application.Commands.Professional
                     SkillId = request.SkillId,
 
                     Level = request.Level,
+
+                    CreatedBy = profile.UserId.ToString(),
 
                     YearsOfExperience = request.YearsOfExperience,
 

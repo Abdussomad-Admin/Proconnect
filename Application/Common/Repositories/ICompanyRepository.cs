@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿using Application.Common.Dtos.Admin;
+using Application.Common.Pagenation;
+using Domain.Entities;
 
 namespace Application.Common.Repositories
 {
@@ -13,6 +15,8 @@ namespace Application.Common.Repositories
         Task<bool> ExistsByNameAsync(string name);
 
         Task<Company?> GetByInvitationCodeAsync(string invitationCode);
+
+        Task<PageResponse<Company>> GetAdminListAsync(AdminCompanyFilter filter, PageRequest pageRequest, bool usePaging);
 
         void UpdateAsync(Company company);
 

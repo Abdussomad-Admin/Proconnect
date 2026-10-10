@@ -21,14 +21,6 @@ namespace Domain.Entities
         public DateTime DateCreated { get; set; } = DateTime.UtcNow;
     }
 }
-    public enum ReferrerSource
-    {
-        Direct = 1,
-        Search = 2,
-        Network = 3,
-        ExternalLink = 4,
-        Other = 5
-    }
 
     public enum AnalyticsSubjectType
     {

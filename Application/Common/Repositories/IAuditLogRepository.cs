@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿using Application.Common.Dtos;
+using Application.Common.Pagenation;
+using Domain.Entities;
 
 namespace Application.Common.Repositories
 {
@@ -6,5 +8,6 @@ namespace Application.Common.Repositories
     {
         Task AddAsync(AuditLog auditLog);
         Task<AuditLog?> GetByIdAsync(Guid id);
+        Task<PageResponse<AuditLog>> GetAdminListAsync(AdminAuditLogFilter filter, PageRequest pageRequest, bool usePaging);
     }
 }

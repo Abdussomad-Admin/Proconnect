@@ -1,4 +1,5 @@
-﻿using Application.Common.Pagenation;
+﻿using Application.Common.Dtos.Admin;
+using Application.Common.Pagenation;
 using Application.Common.Repositories;
 using Domain.Entities;
 using Domain.Enums;
@@ -26,9 +27,66 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await context.Jobs
                 .Include(j => j.Company)
-                .Include(j => j.RecruiterProfile)
+                .Include(j => j.RecruiterProfile).ThenInclude(r => r.User)
                 .Include(j => j.Department)
+                .Include(j => j.JobApplications)
                 .FirstOrDefaultAsync(j => j.Id == id);
+        }
+
+        public async Task<PageResponse<Job>> GetAdminListAsync(AdminJobFilter filter, PageRequest pageRequest, bool usePaging)
+        {
+            var query = context.Jobs
+                .AsNoTracking()
+                .Include(j => j.Company)
+                .Include(j => j.Department)
+                .Include(j => j.JobApplications)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+                query = query.Where(j =>
+                    j.Title.Contains(filter.Search) ||
+                    j.Company.Name.Contains(filter.Search) ||
+                    j.Location.Contains(filter.Search));
+
+            if (filter.Status.HasValue)
+                query = query.Where(j => j.Status == filter.Status.Value);
+
+            if (!string.IsNullOrWhiteSpace(filter.Industry))
+                query = query.Where(j => j.Company.Industry == filter.Industry);
+
+            if (!string.IsNullOrWhiteSpace(filter.Location))
+                query = query.Where(j => j.Location.Contains(filter.Location));
+
+            if (filter.PostedFrom.HasValue)
+                query = query.Where(j => j.DateCreated >= filter.PostedFrom.Value);
+
+            if (filter.PostedTo.HasValue)
+                query = query.Where(j => j.DateCreated < filter.PostedTo.Value);
+
+            query = query.OrderByDescending(j => j.DateCreated);
+
+            if (usePaging)
+            {
+                var offset = query.Skip((pageRequest.PageNumber - 1) * pageRequest.PageSize).Take(pageRequest.PageSize);
+
+                return new PageResponse<Job>
+                {
+                    Items = await offset.ToListAsync(),
+                    TotalCount = await query.CountAsync(),
+                    PageNumber = pageRequest.PageNumber,
+                    PageSize = pageRequest.PageSize
+                };
+            }
+
+            var count = await query.CountAsync();
+
+            return new PageResponse<Job>
+            {
+                Items = await query.ToListAsync(),
+                TotalCount = count,
+                PageNumber = 1,
+                PageSize = count
+            };
         }
 
         private IQueryable<Job> ApplySearchFilter(JobSearchFilter filter, bool excludeWorkPlaceType = false)
@@ -266,15 +324,17 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<List<JobTitleCount>> GetTopJobTitlesByApplicationsAsync(
             Guid companyId, DateTime start, DateTime end, int take)
         {
-            return await context.JobApplications
+            var rows = await context.JobApplications
                 .AsNoTracking()
                 .Where(a => a.Job.CompanyId == companyId
                     && a.AppliedAt >= start && a.AppliedAt <= end)
                 .GroupBy(a => a.Job.Title)
-                .Select(g => new JobTitleCount(g.Key, g.Count()))
+                .Select(g => new { Title = g.Key, Count = g.Count() })
                 .OrderByDescending(x => x.Count)
                 .Take(take)
                 .ToListAsync();
+
+            return rows.Select(r => new JobTitleCount(r.Title, r.Count)).ToList();
         }
 
         public async Task<List<Guid>> GetJobIdsByCompanyAsync(Guid companyId)

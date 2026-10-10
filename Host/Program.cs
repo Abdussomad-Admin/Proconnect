@@ -4,6 +4,8 @@ using Application.Contract.Settings;
 using Application.Services.Interfaces;
 using Domain.Entities;
 using Infrastructure.Authentication;
+using Infrastructure.BackgroundServices;
+using Infrastructure.HealthChecks;
 using Infrastructure.Hubs;
 using Infrastructure.Persistence.Context;
 using Infrastructure.Persistence.Repositories;
@@ -29,6 +31,7 @@ builder.Services.AddControllers();
 // ==========================================
 
 builder.Services.AddEndpointsApiExplorer();
+
 
 builder.Services.AddHttpContextAccessor();
 
@@ -134,6 +137,8 @@ builder.Services.AddScoped<IFileUploadRepository, FileUploadRepository>();
 
 builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
 
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
+
 builder.Services.AddScoped<IJobRepository, JobRepository>();
 
 builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
@@ -150,6 +155,8 @@ builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+
+builder.Services.AddScoped<IAdminDashboardRepository, AdminDashboardRepository>();
 
 
 
@@ -212,11 +219,21 @@ builder.Services.AddScoped<ISavedEventRepository, SavedEventRepository>();
 builder.Services.AddScoped<IAnalyticsEventRepository, AnalyticsEventRepository>();
 
 
+builder.Services.AddHostedService<ScheduledJobPublisher>();
+
 builder.Services.Configure<JwtSetiings>(builder.Configuration.GetSection("Jwt"));
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSetiings>();
+
+
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<ProConnectDbContext>("database")
+    .AddCheck<CloudinaryHealthCheck>("storage")
+    .AddCheck<SmtpHealthCheck>("email")
+    .AddCheck<SignalRHealthCheck<ChatHub>>("/chatHub")
+    .AddCheck<SignalRHealthCheck<NotificationHub>>("/notificationsHub");
 
 
 
@@ -308,13 +325,14 @@ builder.Services.AddCors(options =>
     {
         policy
             .WithOrigins(
-                "http://127.0.0.1:5500",
-                "http://localhost:5500")
+                "http://localhost:5500",
+                "https://abdussomad-admin.github.io")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
     });
 });
+
 
 
 var app = builder.Build();

@@ -34,6 +34,7 @@ namespace Application.Commands.SavedCandidates
                 {
                     RecruiterProfileId = recruiterProfile.Id,
                     ProfessionalProfileId = request.ProfessionalProfileId,
+                    CreatedBy = recruiterProfile.Id.ToString(),
                     DateCreated = DateTime.UtcNow
                 };
 

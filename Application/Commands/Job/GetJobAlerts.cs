@@ -3,7 +3,7 @@ using Application.Common.Repositories;
 using Domain.Enums;
 using MediatR;
 
-namespace Application.Queries.Job
+namespace Application.Commands.Job
 {
     public class GetJobAlerts
     {

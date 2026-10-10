@@ -4,6 +4,7 @@ using Application.Constant;
 using Application.Contract.Settings;
 using Application.Services.Interfaces;
 using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -83,7 +84,7 @@ namespace Application.Commands.Authentication
                     VerificationTokenExpiry =
                     DateTime.UtcNow.AddMinutes(5),
                     IsVerified = false,
-                    IsActive = true,
+                    Status = UserStatus.Active,
                     DateCreated = DateTime.UtcNow,
                     CreatedBy = request.Email,
                     Bio = "I'm still an ordinary user with no role for now"

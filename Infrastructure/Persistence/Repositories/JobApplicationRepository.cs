@@ -90,6 +90,42 @@ namespace Infrastructure.Persistence.Repositories
             };
         }
 
+        public async Task<(int Total, int Upcoming, int Past, int RejectedAfterScheduling, int DueTodayOrTomorrow)>
+    GetInterviewCountsByRecruiterAsync(Guid recruiterProfileId)
+        {
+            var now = DateTime.UtcNow;
+            var tomorrowEnd = now.Date.AddDays(2);
+
+            var baseQuery = context.JobApplications
+                .AsNoTracking()
+                .Where(a => a.Job.RecruiterProfileId == recruiterProfileId && a.InterviewScheduledAt != null);
+
+            var total = await baseQuery.CountAsync();
+            var upcoming = await baseQuery.CountAsync(a => a.InterviewScheduledAt > now);
+            var past = await baseQuery.CountAsync(a => a.InterviewScheduledAt <= now && a.JobStatus != JobStatus.Rejected);
+            var rejectedAfterScheduling = await baseQuery.CountAsync(a => a.JobStatus == JobStatus.Rejected);
+            var dueTodayOrTomorrow = await baseQuery.CountAsync(a => a.InterviewScheduledAt > now && a.InterviewScheduledAt < tomorrowEnd);
+
+            return (total, upcoming, past, rejectedAfterScheduling, dueTodayOrTomorrow);
+        }
+
+        public async Task<(int CurrentPeriodCount, int PreviousPeriodCount)> GetInterviewSchedulingTrendByRecruiterAsync(
+            Guid recruiterProfileId, DateTime periodStart, DateTime previousPeriodStart, DateTime previousPeriodEnd)
+        {
+            var now = DateTime.UtcNow;
+
+            var baseQuery = context.JobApplications
+                .AsNoTracking()
+                .Where(a => a.Job.RecruiterProfileId == recruiterProfileId && a.InterviewScheduledAt != null);
+
+            var currentPeriodCount = await baseQuery.CountAsync(a =>
+                a.InterviewScheduledAt >= periodStart && a.InterviewScheduledAt <= now);
+            var previousPeriodCount = await baseQuery.CountAsync(a =>
+                a.InterviewScheduledAt >= previousPeriodStart && a.InterviewScheduledAt < previousPeriodEnd);
+
+            return (currentPeriodCount, previousPeriodCount);
+        }
+
         public async Task<PageResponse<JobApplication>> GetByProfessionalProfileIdAsync(
             Guid professionalProfileId,
             PageRequest request,
@@ -359,9 +395,9 @@ namespace Infrastructure.Persistence.Repositories
         }
 
         public async Task<List<IJobApplicationRepository.RecruiterPerformanceDto>> GetRecruiterPerformanceByCompanyAsync(
-            Guid companyId, DateTime start, DateTime end)
+    Guid companyId, DateTime start, DateTime end)
         {
-            var hired = await context.JobApplications
+            var rows = await context.JobApplications
                 .AsNoTracking()
                 .Include(a => a.LastActionedByRecruiterProfile)
                     .ThenInclude(r => r!.User)
@@ -374,9 +410,20 @@ namespace Infrastructure.Persistence.Repositories
                     RecruiterProfileId = a.LastActionedByRecruiterProfileId!.Value,
                     a.LastActionedByRecruiterProfile!.User.FirstName,
                     a.LastActionedByRecruiterProfile.User.LastName,
-                    DaysToHire = (a.UpdatedAt - a.AppliedAt).TotalDays
+                    a.AppliedAt,
+                    a.UpdatedAt
                 })
                 .ToListAsync();
+
+            var hired = rows
+                .Select(r => new
+                {
+                    r.RecruiterProfileId,
+                    r.FirstName,
+                    r.LastName,
+                    DaysToHire = (r.UpdatedAt - r.AppliedAt).TotalDays
+                })
+                .ToList();
 
             return hired
                 .GroupBy(h => new { h.RecruiterProfileId, h.FirstName, h.LastName })

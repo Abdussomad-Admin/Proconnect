@@ -12,6 +12,7 @@ using static Application.Commands.Job.CreateJob;
 using static Application.Commands.Job.CreateJobAlert;
 using static Application.Commands.Job.DeleteJob;
 using static Application.Commands.Job.DeleteJobAlert;
+using static Application.Commands.Job.GetJobAlerts;
 using static Application.Commands.Job.PublishJob;
 using static Application.Commands.Job.RemoveJobSkill;
 using static Application.Commands.Job.SaveJob;
@@ -26,8 +27,8 @@ using static Application.Queries.Job.GetApplicationsByProfessional;
 using static Application.Queries.Job.GetApplicationsByRecruiter;
 using static Application.Queries.Job.GetApplicationStatusCounts;
 using static Application.Queries.Job.GetApplicationStatusCountsByProfessional;
-using static Application.Queries.Job.GetJobAlerts;
 using static Application.Queries.Job.GetJobById;
+using static Application.Queries.Job.GetJobManagementOverview;
 using static Application.Queries.Job.GetJobsByRecruiter;
 using static Application.Queries.Job.GetJobSkills;
 using static Application.Queries.Job.GetRecommendedJobs;
@@ -504,6 +505,14 @@ namespace Host.Controllers.Job
         {
             var pageRequest = new PageRequest { PageNumber = pageNumber, PageSize = pageSize };
             var response = await mediator.Send(new GetRecommendedJobsQuery(professionalProfileId, pageRequest, usePaging));
+            if (!response.Status) return BadRequest(response);
+            return Ok(response);
+        }
+
+        [HttpGet("management-overview")]
+        public async Task<IActionResult> GetJobManagementOverview([FromQuery] Guid recruiterProfileId)
+        {
+            var response = await mediator.Send(new GetJobManagementOverviewQuery(recruiterProfileId));
             if (!response.Status) return BadRequest(response);
             return Ok(response);
         }

@@ -4,6 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>c69b7a9d-d2e3-4849-967e-945614f4f1ab</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +22,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.12" />
     <PackageReference Include="MimeKit" Version="4.18.1" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="10.0.9" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />

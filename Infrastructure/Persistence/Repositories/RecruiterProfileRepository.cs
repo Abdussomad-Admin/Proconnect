@@ -28,6 +28,15 @@ namespace Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(r => r.UserId == userId && !r.IsDeleted);
         }
 
+        public async Task<Dictionary<Guid, int>> CountByCompanyIdsAsync(List<Guid> companyIds)
+        {
+            return await proConnectDb.RecruiterProfiles
+                .Where(r => !r.IsDeleted && r.CompanyId.HasValue && companyIds.Contains(r.CompanyId.Value))
+                .GroupBy(r => r.CompanyId!.Value)
+                .Select(g => new { CompanyId = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.CompanyId, x => x.Count);
+        }
+
         public async Task<PageResponse<RecruiterProfile>> GetByCompanyIdAsync(PageRequest request, bool usePaging, Guid companyId, RecruiterStatus? status)
         {
             var query = proConnectDb.RecruiterProfiles

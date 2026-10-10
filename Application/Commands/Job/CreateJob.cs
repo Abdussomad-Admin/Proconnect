@@ -37,6 +37,9 @@ namespace Application.Commands.Job
                 CreateJobCommand request,
                 CancellationToken cancellationToken)
             {
+                if (request.Status is not (JobPostingStatus.Draft or JobPostingStatus.Scheduled))
+                    return Result<string>.Failure("A job can only be created as a draft or scheduled");
+
                 if (request.MinSalary > request.MaxSalary)
                     return Result<string>.Failure("Minimum salary cannot exceed maximum salary");
 

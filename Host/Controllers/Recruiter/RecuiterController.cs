@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using static Application.Commands.ApproveRecruiter;
 using static Application.Commands.RemoveRecruiter;
 using static Application.Commands.Review.CreateCompanyReview;
@@ -18,8 +19,8 @@ using static Application.Queries.Company.GetCompanyRatingSummary;
 using static Application.Queries.Company.GetCompanyReviews;
 using static Application.Queries.Company.GetPeopleYouMightKnowAtCompany;
 using static Application.Queries.Recruiter.GetCompanyPublicProfile;
+using static Application.Queries.Recruiter.GetSavedCandidates;
 using static Application.Queries.Recruiter.MarkReviewHelpful;
-using static Application.Queries.SavedCandidates.GetSavedCandidates;
 
 namespace Host.Controllers.Recruiter
 {
@@ -276,6 +277,13 @@ namespace Host.Controllers.Recruiter
         {
             var query = new GetSavedCandidatesQuery(ClaimsHelper.GetUserId(User), pageNumber, pageSize, usePaging);
             var response = await sender.Send(query);
+            return response.Status ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpGet("interviews/stats")]
+        public async Task<IActionResult> GetInterviewStats()
+        {
+            var response = await sender.Send(new GetInterviewStats.GetInterviewStatsQuery(ClaimsHelper.GetUserId(User)));
             return response.Status ? Ok(response) : BadRequest(response);
         }
     }

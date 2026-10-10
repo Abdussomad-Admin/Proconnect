@@ -1,4 +1,5 @@
-﻿using Application.Common.Pagenation;
+﻿using Application.Common.Dtos.Admin;
+using Application.Common.Pagenation;
 using Application.Common.Repositories;
 using Domain.Entities;
 using Domain.Enums;
@@ -44,6 +45,59 @@ namespace Infrastructure.Persistence.Repositories
                 .AsQueryable();
 
             return await PaginateAsync(query, request, usePaging);
+        }
+
+        public async Task<PageResponse<Post>> GetAdminListAsync(AdminPostFilter filter, PageRequest pageRequest, bool usePaging)
+        {
+            var query = context.Posts
+                .AsNoTracking()
+                .Include(p => p.User)
+                .Include(p => p.Attachments.Where(a => !a.IsDeleted))
+                .Include(p => p.Reports)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+                query = query.Where(p => p.Content.Contains(filter.Search) || p.User.UserName.Contains(filter.Search));
+
+            if (filter.Status == "Removed")
+                query = query.Where(p => p.IsDeleted);
+            else if (filter.Status == "Flagged")
+                query = query.Where(p => !p.IsDeleted && p.Reports.Any(r => r.ReportStatus == ReportStatus.Pending));
+            else if (filter.Status == "Active")
+                query = query.Where(p => !p.IsDeleted && !p.Reports.Any(r => r.ReportStatus == ReportStatus.Pending));
+            else
+                query = query.Where(p => !p.IsDeleted);
+
+            if (filter.PostedFrom.HasValue)
+                query = query.Where(p => p.DateCreated >= filter.PostedFrom.Value);
+
+            if (filter.PostedTo.HasValue)
+                query = query.Where(p => p.DateCreated < filter.PostedTo.Value);
+
+            query = query.OrderByDescending(p => p.DateCreated);
+
+            if (usePaging)
+            {
+                var offset = query.Skip((pageRequest.PageNumber - 1) * pageRequest.PageSize).Take(pageRequest.PageSize);
+
+                return new PageResponse<Post>
+                {
+                    Items = await offset.ToListAsync(),
+                    TotalCount = await query.CountAsync(),
+                    PageNumber = pageRequest.PageNumber,
+                    PageSize = pageRequest.PageSize
+                };
+            }
+
+            var count = await query.CountAsync();
+
+            return new PageResponse<Post>
+            {
+                Items = await query.ToListAsync(),
+                TotalCount = count,
+                PageNumber = 1,
+                PageSize = count
+            };
         }
 
         public async Task<PageResponse<Post>> GetAllPublicAsync(PageRequest request, bool usePaging)

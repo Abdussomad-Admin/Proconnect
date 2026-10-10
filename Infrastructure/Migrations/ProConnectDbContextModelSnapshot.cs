@@ -267,6 +267,9 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<string>("Strengths")
                         .HasColumnType("longtext");
 
@@ -396,7 +399,7 @@ namespace Infrastructure.Migrations
                         {
                             Id = new Guid("b235f2ed-bb4e-4bd2-a03d-0e3c17aaf2e2"),
                             CreatedBy = "c117635d-96e0-409b-9fae-72976ec9c42a",
-                            DateCreated = new DateTime(2026, 9, 24, 4, 29, 58, 864, DateTimeKind.Utc).AddTicks(5503),
+                            DateCreated = new DateTime(2026, 10, 1, 7, 11, 30, 798, DateTimeKind.Utc).AddTicks(8103),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsGroup = false,
@@ -451,14 +454,14 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e199a51e-def7-49d4-9663-08c2e0616969"),
+                            Id = new Guid("468d8cc8-2303-4128-aff8-689e01e5478a"),
                             ConversationId = new Guid("b235f2ed-bb4e-4bd2-a03d-0e3c17aaf2e2"),
                             CreatedBy = "c117635d-96e0-409b-9fae-72976ec9c42a",
                             IsDeleted = false,
                             IsHidden = false,
                             IsMuted = false,
                             IsPinned = false,
-                            JoinedAt = new DateTime(2026, 9, 24, 4, 29, 58, 865, DateTimeKind.Utc).AddTicks(4942),
+                            JoinedAt = new DateTime(2026, 10, 1, 7, 11, 30, 800, DateTimeKind.Utc).AddTicks(1470),
                             UserId = "c117635d-96e0-409b-9fae-72976ec9c42a"
                         });
                 });
@@ -1605,6 +1608,10 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -1615,7 +1622,7 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<Guid>("PostId")
+                    b.Property<Guid?>("PostId")
                         .HasColumnType("char(36)");
 
                     b.Property<int>("Reason")
@@ -1865,11 +1872,6 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
 
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(true);
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
@@ -1911,6 +1913,9 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<string>("Tel")
                         .HasColumnType("longtext");
 
@@ -1937,17 +1942,17 @@ namespace Infrastructure.Migrations
                             Id = "c117635d-96e0-409b-9fae-72976ec9c42a",
                             Bio = "I am the administrator of this platform.",
                             CreatedBy = "system",
-                            DateCreated = new DateTime(2026, 9, 24, 4, 29, 58, 783, DateTimeKind.Utc).AddTicks(6202),
+                            DateCreated = new DateTime(2026, 10, 1, 7, 11, 30, 693, DateTimeKind.Utc).AddTicks(4637),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             FirstName = "Ajibike",
-                            HashedPassword = "AQAAAAIAAYagAAAAEFQwdoK83o9eLb8A3e5UgZTrxXzV4uRqy0uXH98fyubyEhyZPyUMS7WMGRO8imKYbg==",
-                            IsActive = true,
+                            HashedPassword = "AQAAAAIAAYagAAAAEL9NXwCKuScg5iF1EazblSt0vKcD/QYV+2opRua2lfl13OUYcJzCKMy+z7GKDalZkQ==",
                             IsDeleted = false,
                             IsVerified = true,
                             LastName = "Abdussomad",
                             Location = "Ogun State, Nigeria",
                             Role = "admin",
+                            Status = 1,
                             UserName = "Administrator"
                         });
                 });
@@ -2461,8 +2466,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Post", "Post")
                         .WithMany("Reports")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Domain.Entities.User", "ReportedUser")
                         .WithMany("ReportsReceived")

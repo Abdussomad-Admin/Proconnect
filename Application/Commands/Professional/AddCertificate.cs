@@ -42,6 +42,8 @@ namespace Application.Commands.Professional
 
                     CredentialId = request.CredentialId,
 
+                    CreatedBy = request.ProfessionalProfileId.ToString(),
+
                     CredentialUrl = request.CredentialUrl,
 
                     DateCreated = DateTime.UtcNow

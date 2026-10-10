@@ -1,4 +1,5 @@
-﻿using Application.Common.Pagenation;
+﻿using Application.Common.Dtos.Admin;
+using Application.Common.Pagenation;
 using Domain.Entities;
 
 namespace Application.Common.Repositories
@@ -21,9 +22,13 @@ namespace Application.Common.Repositories
 
         Task<User?> GetByPasswordResetTokenAsync(string token);
 
+        Task<User?> GetByIdWithAdminDetailsAsync(Guid id);
+
         Task<User?> GetByRefreshTokenAsync(string refreshToken);
 
         Task<IEnumerable<User>> SearchAsync(string keyword);
+
+        Task<PageResponse<User>> GetAdminListAsync(AdminUserFilter filter, PageRequest pageRequest, bool usePaging);
 
         Task<PageResponse<User>> GetAllAsync(PageRequest pageRequest, bool usePaging);
 

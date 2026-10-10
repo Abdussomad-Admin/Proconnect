@@ -1,4 +1,5 @@
-﻿using Application.Common.Pagenation;
+﻿using Application.Common.Dtos.Admin;
+using Application.Common.Pagenation;
 using Domain.Entities;
 using Domain.Enums;
 
@@ -15,6 +16,8 @@ namespace Application.Common.Repositories
             JobPostingStatus? status,
             PageRequest request,
             bool usePaging);
+        Task<PageResponse<Job>> GetAdminListAsync(AdminJobFilter filter, PageRequest pageRequest, bool usePaging);
+
         Task<Dictionary<WorkPlaceType, int>> GetWorkPlaceTypeCountsAsync(JobSearchFilter filter);
         Task<List<JobTitleCount>> GetTrendingJobTitlesAsync(List<Guid>? categoryIds, int take);
         Task<PageResponse<Job>> GetRecommendedAsync(

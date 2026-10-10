@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities
+﻿using Domain.Enums;
+
+namespace Domain.Entities
 {
     public class User
     {
@@ -28,7 +30,7 @@
 
         public bool IsVerified { get; set; }
 
-        public bool IsActive { get; set; } = true;
+        public UserStatus Status { get; set; } = UserStatus.PendingVerification;
 
         public string? VerificationToken { get; set; }
 

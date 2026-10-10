@@ -1,4 +1,5 @@
-﻿using Application.Common.Pagenation;
+﻿using Application.Common.Dtos.Admin;
+using Application.Common.Pagenation;
 using Domain.Entities;
 using Domain.Enums;
 
@@ -17,6 +18,8 @@ namespace Application.Common.Repositories
         Task<PageResponse<Post>> GetByUserIdAsync(Guid userId, PageRequest request, bool usePaging);
 
         Task<Dictionary<ReactionType, int>> GetReactionBreakdownAsync(Guid userId, DateTime start, DateTime end);
+
+        Task<PageResponse<Post>> GetAdminListAsync(AdminPostFilter filter, PageRequest pageRequest, bool usePaging);
 
         Task<int> GetCommentsCountAsync(Guid postId);
 

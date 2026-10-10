@@ -111,7 +111,7 @@ namespace Application.Commands.Job
                         type: NotificationType.JobApplication,
                         sourceEntityType: NotificationSourceEntityType.JobApplication,
                         sourceEntityId: application.Id,
-                        actionUrl: $"/job-applications.html?jobId={job.Id}",
+                        actionUrl: $"/applications.html?jobId={job.Id}",
                         createdBy: request.CreatedBy);
                 }
 

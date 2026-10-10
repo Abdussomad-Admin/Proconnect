@@ -40,11 +40,18 @@ namespace Infrastructure.Persistence.Repositories
             bool usePaging)
         {
             var query = context.SavedCandidates
-                .AsNoTracking()
-                .Include(sc => sc.ProfessionalProfile)
-                    .ThenInclude(p => p.User)
-                .Where(sc => sc.RecruiterProfileId == recruiterProfileId && !sc.IsDeleted)
-                .OrderByDescending(sc => sc.DateCreated);
+            .AsNoTracking()
+            .Include(sc => sc.ProfessionalProfile)
+                .ThenInclude(p => p.User)
+            .Include(sc => sc.ProfessionalProfile)
+                .ThenInclude(p => p.Experiences)
+            .Include(sc => sc.ProfessionalProfile)
+                .ThenInclude(p => p.Educations)
+            .Include(sc => sc.ProfessionalProfile)
+                .ThenInclude(p => p.ProfessionalSkills)
+                    .ThenInclude(ps => ps.Skill)
+            .Where(sc => sc.RecruiterProfileId == recruiterProfileId && !sc.IsDeleted)
+            .OrderByDescending(sc => sc.DateCreated);
 
             if (!usePaging)
             {

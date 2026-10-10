@@ -62,7 +62,9 @@ namespace Application.Queries.Job
                         a.InterviewScheduledAt,
                         a.InterviewType,
                         a.InterviewLocationOrLink,
-                        a.AppliedAt)).ToList(),
+                        a.AppliedAt,
+                        a.UpdatedAt,
+                        a.LastActionedByRecruiterProfileId)).ToList(),
                     TotalCount = applications.TotalCount,
                     PageNumber = applications.PageNumber,
                     PageSize = applications.PageSize
@@ -92,5 +94,7 @@ namespace Application.Queries.Job
         DateTime? InterviewScheduledAt,
         string? InterviewType,
         string? InterviewLocationOrLink,
-        DateTime AppliedAt);
+        DateTime AppliedAt,
+        DateTime UpdatedAt,
+        Guid? LastActionedByRecruiterProfileId);
 }

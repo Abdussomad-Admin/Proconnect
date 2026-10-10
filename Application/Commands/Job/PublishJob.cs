@@ -13,9 +13,9 @@ namespace Application.Commands.Job
         ) : IRequest<Result<string>>;
 
         public class PublishJobHandler(
-            IJobRepository jobRepository,
-            IUnitOfWork unitOfWork)
-            : IRequestHandler<PublishJobCommand, Result<string>>
+    IJobRepository jobRepository,
+    IUnitOfWork unitOfWork)
+    : IRequestHandler<PublishJobCommand, Result<string>>
         {
             public async Task<Result<string>> Handle(
                 PublishJobCommand request,
@@ -29,14 +29,14 @@ namespace Application.Commands.Job
                 if (job.RecruiterProfileId != request.RecruiterProfileId)
                     return Result<string>.Failure("You are not authorized to publish this job");
 
-                if (job.Status == JobPostingStatus.Active)
-                    return Result<string>.Failure("This job is already active");
+                if (job.Status == JobPostingStatus.PendingApproval || job.Status == JobPostingStatus.Active)
+                    return Result<string>.Failure("This job has already been submitted for review");
 
-                job.Status = JobPostingStatus.Active;
+                job.Status = JobPostingStatus.PendingApproval;
 
                 job.ScheduledPublishAt = null;
 
-                job.IsActive = true;
+                job.IsActive = false;
 
                 job.UpdatedAt = DateTime.UtcNow;
 
@@ -44,7 +44,7 @@ namespace Application.Commands.Job
 
                 await unitOfWork.SaveAsync();
 
-                return Result<string>.Success(job.Id.ToString(), "Job published successfully");
+                return Result<string>.Success(job.Id.ToString(), "Job submitted for review");
             }
         }
     }

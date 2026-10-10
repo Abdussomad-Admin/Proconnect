@@ -1,4 +1,5 @@
-﻿using Application.Common.Pagenation;
+﻿using Application.Common.Dtos;
+using Application.Common.Pagenation;
 using Application.Common.Repositories;
 using Domain.Entities;
 using Domain.Enums;
@@ -18,6 +19,56 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await context.Events
                 .FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted);
+        }
+
+        public async Task<PageResponse<Event>> GetAdminListAsync(AdminEventFilter filter, PageRequest pageRequest, bool usePaging)
+        {
+            var query = context.Events
+                .AsNoTracking()
+                .Include(e => e.Company)
+                .Include(e => e.Registrations)
+                .Where(e => !e.IsDeleted)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+                query = query.Where(e => e.Title.Contains(filter.Search) || e.Description.Contains(filter.Search));
+
+            if (filter.Status.HasValue)
+                query = query.Where(e => e.Status == filter.Status.Value);
+
+            if (!string.IsNullOrWhiteSpace(filter.Location))
+                query = query.Where(e => e.Location != null && e.Location.Contains(filter.Location));
+
+            if (filter.StartFrom.HasValue)
+                query = query.Where(e => e.StartDateTime >= filter.StartFrom.Value);
+
+            if (filter.StartTo.HasValue)
+                query = query.Where(e => e.StartDateTime < filter.StartTo.Value);
+
+            query = query.OrderByDescending(e => e.DateCreated);
+
+            if (usePaging)
+            {
+                var offset = query.Skip((pageRequest.PageNumber - 1) * pageRequest.PageSize).Take(pageRequest.PageSize);
+
+                return new PageResponse<Event>
+                {
+                    Items = await offset.ToListAsync(),
+                    TotalCount = await query.CountAsync(),
+                    PageNumber = pageRequest.PageNumber,
+                    PageSize = pageRequest.PageSize
+                };
+            }
+
+            var count = await query.CountAsync();
+
+            return new PageResponse<Event>
+            {
+                Items = await query.ToListAsync(),
+                TotalCount = count,
+                PageNumber = 1,
+                PageSize = count
+            };
         }
 
         public async Task<Event?> GetWithDetailsAsync(Guid id)
