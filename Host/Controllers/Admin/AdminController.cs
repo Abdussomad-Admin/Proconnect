@@ -60,6 +60,24 @@ namespace Host.Controllers.Admin
             return response.Status ? Ok(response) : BadRequest(response);
         }
 
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile()
+        {
+            var adminId = ClaimsHelper.GetUserId(User);
+            var response = await mediator.Send(new GetAdminProfile.GetAdminProfileQuery(adminId));
+            return response.Status ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpPut("profile")]
+        public async Task<IActionResult> UpdateProfile([FromBody] AdminProfileRequest request)
+        {
+            var adminId = ClaimsHelper.GetUserId(User);
+            var command = new UpdateAdminProfile.UpdateAdminProfileCommand(
+                adminId, request.FirstName, request.LastName, request.Tel, request.Bio, request.Location);
+            var response = await mediator.Send(command);
+            return response.Status ? Ok(response) : BadRequest(response);
+        }
+
         [HttpPost("users/{userId:guid}/suspend")]
         public async Task<IActionResult> SuspendUser(Guid userId, [FromBody] AdminRequest request)
         {
@@ -356,4 +374,5 @@ namespace Host.Controllers.Admin
     }
 
     public record AdminRequest(string? Reason);
+    public record AdminProfileRequest(string FirstName, string LastName, string? Tel, string? Bio, string? Location);
 }

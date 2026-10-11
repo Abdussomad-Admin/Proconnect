@@ -302,6 +302,11 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.Configure<EmailSettings>(
     builder.Configuration.GetSection("EmailSettings"));
 
+builder.Services.AddHttpClient<IEmailService, EmailService>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(15);
+});
+
 builder.Services.Configure<FileSettings>(
     builder.Configuration.GetSection("FileSettings"));
 
