@@ -67,7 +67,7 @@ namespace Host.Controllers.Professional
         }
 
         [HttpPost("add-experience")]
-        public async Task<IActionResult> AddExperience(AddExperienceCommand experience)
+        public async Task<IActionResult> AddExperience([FromBody] AddExperienceCommand experience)
         {
             var response = await mediator.Send(experience);
 
@@ -78,6 +78,7 @@ namespace Host.Controllers.Professional
 
             return Ok(response);
         }
+
 
         [HttpPost("add-education")]
         public async Task<IActionResult> AddEducation(AddEducationCommand education)

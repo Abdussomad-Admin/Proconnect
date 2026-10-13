@@ -12,13 +12,13 @@ namespace Application.Commands.Professional
             Guid ProfessionalProfileId,
             string CompanyName,
             string JobTitle,
-            EmploymentType EmploymentType,
-            string Location,
+            EmploymentType? EmploymentType,
+            string? Location,
             DateTime StartDate,
-            DateTime EndDate,
+            DateTime? EndDate,
             bool IsCurrentJob,
-            string Description,
-            string CreatedBy
+            string? Description,
+            string? CreatedBy
             ) : IRequest<Result<AddExperienceResponse>>;
 
         public class AddExperienceHandler(
@@ -28,6 +28,24 @@ namespace Application.Commands.Professional
         {
             public async Task<Result<AddExperienceResponse>> Handle(AddExperienceCommand request, CancellationToken cancellationToken)
             {
+                if (string.IsNullOrWhiteSpace(request.CompanyName) ||
+                    string.IsNullOrWhiteSpace(request.JobTitle))
+                {
+                    return Result<AddExperienceResponse>.Failure("Company and job title are required");
+                }
+
+                if (!request.IsCurrentJob && request.EndDate is null)
+                {
+                    return Result<AddExperienceResponse>.Failure("End date is required unless this is your current job");
+                }
+
+                var endDate = request.IsCurrentJob ? request.StartDate : request.EndDate!.Value;
+
+                if (endDate < request.StartDate)
+                {
+                    return Result<AddExperienceResponse>.Failure("End date cannot be before the start date");
+                }
+
                 var profile = await professionalProfileRepository.GetByIdAsync(request.ProfessionalProfileId);
 
                 if (profile is null)
@@ -36,15 +54,15 @@ namespace Application.Commands.Professional
                 var experience = new Experience
                 {
                     ProfessionalProfileId = profile.Id,
-                    CompanyName = request.CompanyName,
-                    JobTitle = request.JobTitle,
-                    EmploymentType = request.EmploymentType,
-                    Location = request.Location,
+                    CompanyName = request.CompanyName.Trim(),
+                    JobTitle = request.JobTitle.Trim(),
+                    EmploymentType = request.EmploymentType ?? default(EmploymentType),
+                    Location = request.Location ?? string.Empty,
                     StartDate = request.StartDate,
-                    EndDate = request.IsCurrentJob ? request.StartDate : request.EndDate,
+                    EndDate = endDate,
                     IsCurrentJob = request.IsCurrentJob,
-                    Description = request.Description,
-                    CreatedBy = request.CreatedBy
+                    Description = request.Description ?? string.Empty,
+                    CreatedBy = request.CreatedBy ?? string.Empty
                 };
 
                 await experienceRepository.CreateAsync(experience);
